@@ -21,7 +21,9 @@ class Curseforge {
 	}
 
 	private headers = {
-		"x-api-key": "$2a$10$7/iTthoLTW3f3yYfzZK3kewLQ.MoOu20mt/vIdGcz7fd9XgDWyBtO",
+		// Can be set via cloudflare workers secrets
+		// @ts-ignore - Injected as a global variable.
+		"x-api-key": CURSEFORGE_API_KEY,
 	};
 
 
