@@ -1,11 +1,11 @@
 import { StatusError } from 'itty-router-extras';
 
-import { Category } from '~/api/minecraft/curseforge/types/Category';
 import { ModLoaderType } from '~/api/minecraft/curseforge/types/enums';
 import { Mod } from '~/api/minecraft/curseforge/types/Mod';
 import { ModFile } from '~/api/minecraft/curseforge/types/ModFile';
 import { PagingOptions, SearchOptions } from '~/api/minecraft/curseforge/types/types';
 import cachedFetch from '~/cachedFetch';
+import { Env } from '~/index';
 
 import { Provider } from './provider';
 
@@ -15,16 +15,17 @@ class Curseforge {
 	/**
 	 * ?
 	 * @param baseURL ?
+	 * @param env ?
 	 */
 	public constructor(baseURL: string) {
 		this.baseURL = baseURL;
 	}
 
-	private headers = {
+	private getHeaders = () => ({
 		// Can be set via cloudflare workers secrets
-		// @ts-ignore - Injected as a global variable.
-		"x-api-key": CURSEFORGE_API_KEY,
-	};
+		// @ts-ignore
+		"x-api-key": globalThis?.env?.CURSEFORGE_API_KEY,
+	});
 
 
 	async searchMods(options: SearchOptions & PagingOptions): Promise<Mod[]> {
@@ -42,7 +43,7 @@ class Curseforge {
 		}
 
 		// TODO: Change to cachedFetch
-		const res = await this.fetch(uri.toString(), { headers: this.headers });
+		const res = await this.fetch(uri.toString(), { headers: this.getHeaders() });
 		if (res === null) { return []; }
 
 		const json: any = await res.json();
@@ -62,7 +63,7 @@ class Curseforge {
 		const uri = new URL(`v1/mods/${modId}`, this.baseURL);
 
 		// TODO: Change to cachedFetch
-		const res = await this.fetch(uri.toString(), { headers: this.headers });
+		const res = await this.fetch(uri.toString(), { headers: this.getHeaders() });
 		if (res === null) { return null; }
 
 		const json: any = await res.json();
@@ -115,7 +116,7 @@ class Curseforge {
 		}
 
 		// TODO: Change to cachedFetch
-		const res = await this.fetch(uri.toString(), { headers: this.headers });
+		const res = await this.fetch(uri.toString(), { headers: this.getHeaders() });
 		if (res === null) return [];
 
 		const json: any = await res.json();
@@ -133,7 +134,7 @@ class Curseforge {
 		const uri = new URL(`v1/mods/${modId}/files/${fileId}`, this.baseURL);
 
 		// TODO: Change to cachedFetch
-		const res = await this.fetch(uri.toString(), { headers: this.headers });
+		const res = await this.fetch(uri.toString(), { headers: this.getHeaders() });
 		if (res === null) return undefined;
 
 		const json: any = await res.json();
@@ -150,7 +151,7 @@ class Curseforge {
 					cacheEverything: true,
 					cacheTtl: 24 * 60 * 60,
 				},
-				headers: this.headers,
+				headers: this.getHeaders(),
 			},
 		);
 		if (res === null) {

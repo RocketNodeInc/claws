@@ -1,4 +1,5 @@
 import { FileHashAlgorithms, ModsSearchSortField } from '~/api/minecraft/curseforge/types/enums';
+import { Env } from '~/index';
 import { Build, EditionProvider, Mod, ModBuild, ModProvider, ModProviderHandler, ProviderType } from '~/schema';
 
 import { Curseforge } from '.';
@@ -6,10 +7,12 @@ import { Curseforge } from '.';
 export class Provider implements ModProviderHandler {
 	private readonly curseforge: Curseforge;
 	private readonly project: EditionProvider;
+	private readonly env: Env;
 
-	public constructor(curseforge: Curseforge, project: EditionProvider) {
+	public constructor(curseforge: Curseforge, project: EditionProvider, env: Env) {
 		this.curseforge = curseforge;
 		this.project = project;
+		this.env = env;
 	}
 
 	async searchMods(query?: string): Promise<Mod[]> {
