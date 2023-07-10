@@ -44,7 +44,5 @@ export async function versionMapper(versions: string[] = []): Promise<{ [key: st
 		}
 	}
 
-	console.log(m);
-
 	return groupKeysByValue(m);
 }

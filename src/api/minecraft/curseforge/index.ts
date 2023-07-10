@@ -62,8 +62,7 @@ class Curseforge {
 	async getMod(modId: number): Promise<Mod | null> {
 		const uri = new URL(`v1/mods/${modId}`, this.baseURL);
 
-		// TODO: Change to cachedFetch
-		const res = await this.fetch(uri.toString(), { headers: this.getHeaders() });
+		const res = await this.cachedFetch(uri.toString(), { headers: this.getHeaders() });
 		if (res === null) { return null; }
 
 		const json: any = await res.json();
@@ -115,8 +114,7 @@ class Curseforge {
 			if(searchOptions.pageSize) uri.searchParams.set("pageSize", searchOptions.pageSize.toString());
 		}
 
-		// TODO: Change to cachedFetch
-		const res = await this.fetch(uri.toString(), { headers: this.getHeaders() });
+		const res = await this.cachedFetch(uri.toString(), { headers: this.getHeaders() });
 		if (res === null) return [];
 
 		const json: any = await res.json();
@@ -133,8 +131,7 @@ class Curseforge {
 	async getFile(modId: number, fileId: number): Promise<ModFile | undefined> {
 		const uri = new URL(`v1/mods/${modId}/files/${fileId}`, this.baseURL);
 
-		// TODO: Change to cachedFetch
-		const res = await this.fetch(uri.toString(), { headers: this.getHeaders() });
+		const res = await this.cachedFetch(uri.toString(), { headers: this.getHeaders() });
 		if (res === null) return undefined;
 
 		const json: any = await res.json();

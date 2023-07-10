@@ -70,9 +70,9 @@ export class Provider implements ModProviderHandler {
 		let file: ModFile | undefined;
 		if (fileId === 'latest') {
 			const latestFile = await this.curseforge.getFiles(Number(mod), {}).then(files => files[0]);
-			if (serverOnly && latestFile) {
+			if (serverOnly && latestFile && latestFile.serverPackFileId) {
 				if (latestFile?.isServerPack) file = latestFile;
-				else file = await this.curseforge.getServerFile(Number(mod), latestFile.id);
+				else file = await this.curseforge.getFile(Number(mod), latestFile.serverPackFileId);
 			} else file = latestFile;
 		}
 		else file = await (serverOnly ? this.curseforge.getServerFile(Number(mod), Number(fileId)) : this.curseforge.getFile(Number(mod), Number(fileId)));
