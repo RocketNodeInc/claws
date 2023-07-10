@@ -14,6 +14,7 @@ export interface Download {
 	name: string;
 	url: string;
 	builtAt: Date;
+	gameVersion?: string;
 	checksums: {
 		md5?: string;
 		sha1?: string;
@@ -50,12 +51,15 @@ export interface Provider {
 // Base for all edition providers
 // i.e. Paper, Vanilla, etc.
 export interface EditionProvider extends Provider {
+	provider?: EditionProviderHandler;
 	versions?: string[];
 }
 
 // Base for all mod/modpack provider
 // i.e. Curseforge, Technic, etc.
-export type ModProvider = Provider
+export interface ModProvider extends Provider {
+	provider?: ModProviderHandler;
+}
 
 export interface Version {
 	name: string;

@@ -1,7 +1,7 @@
 import { Curseforge, Provider } from '~/api/minecraft/curseforge';
-import { EditionProvider, ProviderType } from '~/schema';
+import { EditionProvider, ModProvider, ProviderType } from '~/schema';
 
-const curseforge: EditionProvider = {
+const curseforge: ModProvider = {
 	slug: 'curseforge',
 	name: 'Curseforge',
 	type: ProviderType.MOD,

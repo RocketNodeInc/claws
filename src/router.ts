@@ -128,7 +128,7 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			if (!(project in editions)) return missing('project not found');
 
 			const p = editions[project];
-			const provider = p.provider as EditionProviderHandler;
+			const provider = p.provider;
 			if (provider === undefined) throw new Error();
 
 			return this.json(await provider.getVersion(version));
@@ -141,7 +141,7 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			if (!(project in editions)) return missing('project not found');
 
 			const p = editions[project];
-			const provider = p.provider as EditionProviderHandler;
+			const provider = p.provider;
 			if (provider === undefined) throw new Error();
 
 			const res = await provider.getVersion(version);
@@ -170,7 +170,7 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 				if (!(project in editions)) return missing('project not found');
 
 				const p = editions[project];
-				const provider = p.provider as EditionProviderHandler;
+				const provider = p.provider;
 				if (provider === undefined) throw new Error();
 
 				const res = await provider.getBuild(version, build);
@@ -193,7 +193,7 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 				if (!(project in editions)) return missing('project not found');
 
 				const p = editions[project];
-				const provider = p.provider as EditionProviderHandler;
+				const provider = p.provider;
 				if (provider === undefined) throw new Error();
 
 				const res = await provider.getDownload(version, build);
@@ -211,7 +211,7 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			if (!(project in mods)) return missing('project not found');
 
 			const p = mods[project];
-			const provider = p.provider as ModProviderHandler;
+			const provider = p.provider;
 			if (provider === undefined) throw new Error();
 
 			const res = await provider.searchMods(query);
@@ -226,7 +226,7 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			if (!(project in mods)) return missing('project not found');
 
 			const p = mods[project];
-			const provider = p.provider as ModProviderHandler;
+			const provider = p.provider;
 			if (provider === undefined) throw new Error();
 
 			const res = await provider.getMod(mod);
@@ -243,7 +243,7 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			if (!(project in mods)) return missing('project not found');
 
 			const p = mods[project];
-			const provider = p.provider as ModProviderHandler;
+			const provider = p.provider;
 			if (provider === undefined) throw new Error();
 
 			const res = await provider.getFiles(mod, serverOnly ?? false);
@@ -260,7 +260,7 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			if (!(project in mods)) return missing('project not found');
 
 			const p = mods[project];
-			const provider = p.provider as ModProviderHandler;
+			const provider = p.provider;
 			if (provider === undefined) throw new Error();
 
 			const res = await provider.getFile(mod, file, serverOnly ?? false);
@@ -276,7 +276,7 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 			if (!(project in mods)) return missing('project not found');
 
 			const p = mods[project];
-			const provider = p.provider as ModProviderHandler;
+			const provider = p.provider;
 			if (provider === undefined) throw new Error();
 
 			const res = await provider.getDownload(mod, file);
