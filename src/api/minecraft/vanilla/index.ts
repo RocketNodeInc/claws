@@ -23,9 +23,8 @@ class Vanilla {
 	 */
 	async getManifest(): Promise<Manifest | null> {
 		const res = await this.cachedFetch(this.launcherMeta);
-		if (res === null) {
-			return null;
-		}
+		if (res === null) return null;
+
 		return rawDataToManifest(await res.json());
 	}
 

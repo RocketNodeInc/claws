@@ -1,18 +1,17 @@
 import { FileHashAlgorithms, ModsSearchSortField } from '~/api/minecraft/curseforge/types/enums';
-import { Env } from '~/index';
-import { Build, EditionProvider, Mod, ModBuild, ModProvider, ModProviderHandler, ProviderType } from '~/schema';
+import { ModFile } from '~/api/minecraft/curseforge/types/ModFile';
+import { Mod, ModBuild, ModProvider, ModProviderHandler, ProviderType } from '~/schema';
+import { versionMapper } from '~/util/versionMapper';
 
 import { Curseforge } from '.';
 
 export class Provider implements ModProviderHandler {
 	private readonly curseforge: Curseforge;
-	private readonly project: EditionProvider;
-	private readonly env: Env;
+	private readonly project: ModProvider;
 
-	public constructor(curseforge: Curseforge, project: EditionProvider, env: Env) {
+	public constructor(curseforge: Curseforge, project: ModProvider) {
 		this.curseforge = curseforge;
 		this.project = project;
-		this.env = env;
 	}
 
 	async searchMods(query?: string): Promise<Mod[]> {
@@ -31,8 +30,6 @@ export class Provider implements ModProviderHandler {
 	async getMod(modId: string): Promise<Mod | null> {
 		const mod = await this.curseforge.getMod(Number(modId));
 		if (mod === null) return null;
-
-		console.log(mod);
 
 		return {
 			id: mod.id.toString(),
@@ -53,6 +50,7 @@ export class Provider implements ModProviderHandler {
 				name: file.fileName,
 				url: `/api/v1/projects/${this.project.slug}/mods/${file.modId}/files/${file.id}/download`,
 				builtAt: file.fileDate,
+				gameVersion: file.gameVersions[0] ?? 'latest',
 				checksums: {
 					sha1: file.hashes.find(h => h.algo === FileHashAlgorithms.SHA1)?.value,
 					md5: file.hashes.find(h => h.algo === FileHashAlgorithms.MD5)?.value,
@@ -67,7 +65,7 @@ export class Provider implements ModProviderHandler {
 	}
 
 	async getFile(mod: string, fileId: string, serverOnly: boolean): Promise<ModBuild | null> {
-		let file;
+		let file: ModFile | undefined;
 		if (fileId === 'latest') {
 			const latestFile = await this.curseforge.getFiles(Number(mod), {}).then(files => files[0]);
 			if (serverOnly && latestFile) {
@@ -79,12 +77,16 @@ export class Provider implements ModProviderHandler {
 
 		if (file === undefined) return null;
 
+		const mapped: { [k: string]: string[] } = await versionMapper();
+		const gameVersion = Object.entries(mapped).find(([, versions]) => versions.some(v => file!.gameVersions.includes(v)))?.[0] ?? 'latest';
+
 		return {
 			id: file.id.toString(),
 			download: {
 				name: file.fileName,
 				url: `/api/v1/projects/${this.project.slug}/mods/${file.modId}/files/${file.id}/download`,
 				builtAt: file.fileDate,
+				gameVersion,
 				checksums: {
 					sha1: file.hashes.find(h => h.algo === FileHashAlgorithms.SHA1)?.value,
 					md5: file.hashes.find(h => h.algo === FileHashAlgorithms.MD5)?.value,
@@ -99,7 +101,7 @@ export class Provider implements ModProviderHandler {
 	}
 
 	async getDownload(mod: string, fileId: string): Promise<Response | null> {
-		const file = await this.curseforge.getServerFile(Number(mod), Number(fileId));
+		const file = await this.curseforge.getFile(Number(mod), Number(fileId));
 		if (file === undefined) return null;
 
 		return this.curseforge.getDownload(file);

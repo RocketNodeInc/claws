@@ -1,5 +1,5 @@
 import { Vanilla } from '~/api/minecraft/vanilla/index';
-import { Build, EditionProvider, EditionProviderHandler, ProviderHandler, ProviderType, Version } from '~/schema';
+import { Build, EditionProvider, EditionProviderHandler, ProviderType, Version } from '~/schema';
 
 export class Provider implements EditionProviderHandler {
 	private readonly vanilla: Vanilla;
@@ -12,9 +12,8 @@ export class Provider implements EditionProviderHandler {
 
 	async getProject(): Promise<EditionProvider | null> {
 		const p = await this.vanilla.getManifest();
-		if (p === null) {
-			return null;
-		}
+		if (p === null) return null;
+
 		return {
 			slug: this.project.slug,
 			name: this.project.name,

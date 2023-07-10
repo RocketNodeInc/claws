@@ -1,5 +1,5 @@
 {
-	"name": "@matthewpi/claws",
+	"name": "@rocketnodeinc/claws",
 	"version": "1.0.0",
 	"license": "MIT",
 	"main": "dist/index.mjs",
@@ -14,11 +14,13 @@
 	"dependencies": {
 		"itty-router": "2.6.1",
 		"itty-router-extras": "0.4.2",
+		"semver": "7.5.4",
 		"~": "link:./src"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "3.10.0",
 		"@types/itty-router-extras": "0.4.0",
+		"@types/semver": "7.5.0",
 		"@typescript-eslint/eslint-plugin": "5.25.0",
 		"@typescript-eslint/parser": "5.25.0",
 		"@yarnpkg/esbuild-plugin-pnp": "2.0.2",
