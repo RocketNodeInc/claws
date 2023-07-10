@@ -14,6 +14,7 @@ function stripVersion(version: SemVer): string {
 }
 
 export async function versionMapper(versions: string[] = []): Promise<{ [key: string]: string[] }> {
+	// TODO: Make sure this is using a cached version.
 	if (versions.length === 0) versions = await vanilla.provider?.getProject()?.then((v) => v?.versions) || [];
 	if (!versions) throw new Error('No versions found');
 

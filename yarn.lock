@@ -273,38 +273,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@matthewpi/claws@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "@matthewpi/claws@workspace:."
-  dependencies:
-    "@cloudflare/workers-types": 3.10.0
-    "@types/itty-router-extras": 0.4.0
-    "@types/semver": 7.5.0
-    "@typescript-eslint/eslint-plugin": 5.25.0
-    "@typescript-eslint/parser": 5.25.0
-    "@yarnpkg/esbuild-plugin-pnp": 2.0.2
-    cross-env: 7.0.3
-    esbuild: 0.14.39
-    eslint: 8.15.0
-    eslint-config-prettier: 8.5.0
-    eslint-config-standard: 17.0.0
-    eslint-plugin-import: 2.26.0
-    eslint-plugin-n: 15.1.0
-    eslint-plugin-node: 11.1.0
-    eslint-plugin-promise: 6.0.0
-    eslint-plugin-simple-import-sort: 7.0.0
-    husky: 8.0.1
-    itty-router: 2.6.1
-    itty-router-extras: 0.4.2
-    lint-staged: 12.4.1
-    prettier: 2.6.2
-    semver: 7.5.4
-    typescript: 4.6.4
-    wrangler: 3.1.1
-    ~: "link:./src"
-  languageName: unknown
-  linkType: soft
-
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -351,6 +319,38 @@ __metadata:
   checksum: 1388777b507b0c592d53f41b9d182e1a8de7763bc625fc07999b8edbc22325f074e5b3ec90af79c89d6987fdb2325bc66d59f483258543c14a43661621f841b0
   languageName: node
   linkType: hard
+
+"@rocketnodeinc/claws@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@rocketnodeinc/claws@workspace:."
+  dependencies:
+    "@cloudflare/workers-types": 3.10.0
+    "@types/itty-router-extras": 0.4.0
+    "@types/semver": 7.5.0
+    "@typescript-eslint/eslint-plugin": 5.25.0
+    "@typescript-eslint/parser": 5.25.0
+    "@yarnpkg/esbuild-plugin-pnp": 2.0.2
+    cross-env: 7.0.3
+    esbuild: 0.14.39
+    eslint: 8.15.0
+    eslint-config-prettier: 8.5.0
+    eslint-config-standard: 17.0.0
+    eslint-plugin-import: 2.26.0
+    eslint-plugin-n: 15.1.0
+    eslint-plugin-node: 11.1.0
+    eslint-plugin-promise: 6.0.0
+    eslint-plugin-simple-import-sort: 7.0.0
+    husky: 8.0.1
+    itty-router: 2.6.1
+    itty-router-extras: 0.4.2
+    lint-staged: 12.4.1
+    prettier: 2.6.2
+    semver: 7.5.4
+    typescript: 4.6.4
+    wrangler: 3.1.1
+    ~: "link:./src"
+  languageName: unknown
+  linkType: soft
 
 "@tootallnate/once@npm:2":
   version: 2.0.0
@@ -4476,8 +4476,8 @@ __metadata:
   languageName: node
   linkType: hard
 
-"~@link:./src::locator=%40matthewpi%2Fclaws%40workspace%3A.":
+"~@link:./src::locator=%40rocketnodeinc%2Fclaws%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "~@link:./src::locator=%40matthewpi%2Fclaws%40workspace%3A."
+  resolution: "~@link:./src::locator=%40rocketnodeinc%2Fclaws%40workspace%3A."
   languageName: node
   linkType: soft

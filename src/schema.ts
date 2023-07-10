@@ -1,5 +1,6 @@
 export interface Build<T = Download> {
 	id: string;
+	parentId?: string;
 	download: T;
 }
 

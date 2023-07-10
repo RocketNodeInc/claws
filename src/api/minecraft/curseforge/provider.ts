@@ -44,13 +44,15 @@ export class Provider implements ModProviderHandler {
 		let files = await (serverOnly ? this.curseforge.getServerFiles(Number(mod), {}) : this.curseforge.getFiles(Number(mod), {}));
 		files = files.filter(f => f.isServerPack || !!f.serverPackFileId);
 
+		const mapped: { [k: string]: string[] } = await versionMapper();
 		return files.map((file) => ({
 			id: file.id.toString(),
+			parentId: file.modId.toString(),
 			download: {
 				name: file.fileName,
 				url: `/api/v1/projects/${this.project.slug}/mods/${file.modId}/files/${file.id}/download`,
 				builtAt: file.fileDate,
-				gameVersion: file.gameVersions[0] ?? 'latest',
+				gameVersion: Object.entries(mapped).find(([, versions]) => versions.some(v => file!.gameVersions.includes(v)))?.[0] ?? 'latest',
 				checksums: {
 					sha1: file.hashes.find(h => h.algo === FileHashAlgorithms.SHA1)?.value,
 					md5: file.hashes.find(h => h.algo === FileHashAlgorithms.MD5)?.value,
@@ -82,6 +84,7 @@ export class Provider implements ModProviderHandler {
 
 		return {
 			id: file.id.toString(),
+			parentId: file.modId.toString(),
 			download: {
 				name: file.fileName,
 				url: `/api/v1/projects/${this.project.slug}/mods/${file.modId}/files/${file.id}/download`,
