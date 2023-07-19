@@ -25,9 +25,8 @@ export class Provider implements EditionProviderHandler {
 
 	async getVersion(version: string): Promise<Version | null> {
 		const v = await this.forge.getVersion(version);
-		if (v === null) {
-			return v;
-		}
+		if (v === null) return v;
+
 		return {
 			name: v.version,
 			builds: v.builds.map((v) => v.toString()),
@@ -46,14 +45,21 @@ export class Provider implements EditionProviderHandler {
 		const b = await this.forge.getBuild(version, build);
 		if (b === null) return null;
 
+		const file = b.installerFile || b.universalFile;
+
 		return {
 			id: build,
 			download: {
 				name: b.version,
 				url: `/api/v1/projects/${this.project.slug}/versions/${version}/builds/${build}/download`,
 				builtAt: new Date(b.releaseTime),
-				checksums: {},
-				metadata: {},
+				checksums: {
+					sha1: file?.downloads?.artifact.sha1,
+				},
+				metadata: {
+					installer: b.installerFile,
+					universal: b.universalFile,
+				},
 			},
 		};
 	}

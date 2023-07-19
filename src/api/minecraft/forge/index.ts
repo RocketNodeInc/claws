@@ -66,7 +66,9 @@ class Forge {
 	 * @returns ?
 	 */
 	async getDownload(version: string, build: Build): Promise<Response | null> {
-		const res = await this.fetchNoBase(build.mavenFile.downloads.artifact.url,
+		if (!build.universalFile && !build.installerFile) return null;
+
+		const res = await this.fetchNoBase(build.universalFile?.downloads.artifact.url || build.installerFile!.downloads.artifact.url,
 			{
 				cf: {
 					cacheEverything: true,

@@ -1,4 +1,4 @@
-interface MavenFile {
+interface File {
 	downloads: {
 		artifact: {
 			path: string;
@@ -14,12 +14,22 @@ export interface Build {
 	uid: string;
 	version: string;
 	releaseTime: string;
-	mavenFiles: MavenFile[];
-	mavenFile: MavenFile;
+	mavenFiles?: File[];
+	libraries: File[];
+	installerFile?: File;
+	universalFile?: File;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function rawDataToBuild(data: any): Build {
 	console.log(data);
-	return { uid: data.uid, version: data.version, releaseTime: data.releaseTime, mavenFiles: data.mavenFiles, mavenFile: data.mavenFiles.find((f: any) => f.name.endsWith(`${data.version}:installer`)) };
+	return {
+		uid: data.uid,
+		version: data.version,
+		releaseTime: data.releaseTime,
+		mavenFiles: data.mavenFiles,
+		libraries: data.libraries,
+		installerFile: data.mavenFiles?.find((f: any) => f.name.endsWith(`${data.version}:installer`)),
+		universalFile: data.libraries?.find((f: any) => f.name.endsWith(`${data.version}:universal`)),
+	};
 }
