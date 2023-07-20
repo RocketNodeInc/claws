@@ -1,3 +1,4 @@
+import forge from '~/editions/forge';
 import paper from '~/editions/paper';
 import purpur from '~/editions/purpur';
 import travertine from '~/editions/travertine';
@@ -11,8 +12,9 @@ const editions: Record<string, EditionProvider> = {
 	travertine,
 	waterfall,
 	vanilla,
+	forge,
 };
 
 export default editions;
 
-export { paper, purpur, travertine, vanilla, waterfall };
+export { forge,paper, purpur, travertine, vanilla, waterfall };
