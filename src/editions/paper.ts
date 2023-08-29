@@ -4,6 +4,7 @@ import { EditionProvider, ProviderType } from '~/schema';
 const paper: EditionProvider = {
 	slug: 'paper',
 	name: 'Paper',
+	icon: 'https://imagedelivery.net/fcS-Eb3CuvKDsSNDBD51Fg/b0050dde-9468-4b57-75c0-bdcee630b000/public',
 	type: ProviderType.EDITION,
 };
 

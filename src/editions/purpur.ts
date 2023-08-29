@@ -4,6 +4,7 @@ import { EditionProvider, ProviderType } from '~/schema';
 const purpur: EditionProvider = {
 	slug: 'purpur',
 	name: 'Purpur',
+	icon: 'https://imagedelivery.net/fcS-Eb3CuvKDsSNDBD51Fg/0f73e009-7b3a-4ea4-6555-fb1316b9e800/public',
 	type: ProviderType.EDITION,
 };
 

@@ -4,6 +4,7 @@ import { EditionProvider, ProviderType } from '~/schema';
 const forge: EditionProvider = {
 	slug: 'forge',
 	name: 'Forge',
+	icon: 'https://multimc.org/assets/logos/forge.png',
 	type: ProviderType.EDITION,
 };
 

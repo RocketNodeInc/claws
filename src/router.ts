@@ -91,6 +91,7 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 				name: projects[k].name,
 				slug: projects[k].slug,
 				type: projects[k].type,
+				icon: projects[k].icon,
 			})));
 
 			return this.json(data);
