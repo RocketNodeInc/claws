@@ -2,14 +2,17 @@ import { Router as IttyRouter, RouterOptions } from 'itty-router';
 import {
 	error as ittyError,
 	json as ittyJson,
-	missing,
+	missing, status,
 	StatusError,
+	withContent,
 	withParams,
 } from 'itty-router-extras';
 
 import categories from '~/categories';
+import editions from '~/editions';
+import mods from '~/mods';
 import projects from '~/projects';
-import { Provider } from '~/schema';
+import { EditionProvider, EditionProviderHandler, ModProviderHandler, Provider, ProviderType } from '~/schema';
 
 export class Router<TRequest = Request, TMethods = Record<string, never>> {
 	private router: IttyRouter<TRequest, TMethods>;
@@ -60,19 +63,22 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 
 			const data: string[] = [];
 			if (categories[category].modProviders.length > 0) data.push('mods');
-			if (categories[category].projectProviders.length > 0) data.push('projects');
+			if (categories[category].editionProviders.length > 0) data.push('editions');
 
 			return this.json(data);
 		});
 
-		this.router.get('/api/v1/categories/:category/providers/:provider', withParams, ({ category, provider }: { category: string, provider: string }) => {
+		this.router.get('/api/v1/categories/:category/providers/:provider', withParams, ({ category, provider }: {
+			category: string,
+			provider: string
+		}) => {
 			if (!(category in categories)) {
 				return missing('category not found');
 			}
 
 			const data: Provider[] = [];
-			if (provider === 'mods') data.push(...categories[category].modProviders.map(p => ({ ...p, mods: true })));
-			else if (provider === 'projects') data.push(...categories[category].projectProviders.map(p => ({ ...p, mods: false })));
+			if (provider === 'mods') data.push(...categories[category].modProviders);
+			else if (provider === 'editions') data.push(...categories[category].editionProviders);
 
 			return this.json(data);
 		});
@@ -81,7 +87,11 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 	private createProjectRoutes(): void {
 		this.router.get('/api/v1/projects', () => {
 			const data = [];
-			data.push(...Object.keys(projects).map(k => ({ name: projects[k].name, slug: projects[k].slug })));
+			data.push(...Object.keys(projects).map(k => ({
+				name: projects[k].name,
+				slug: projects[k].slug,
+				type: projects[k].type,
+			})));
 
 			return this.json(data);
 		});
@@ -98,112 +108,182 @@ export class Router<TRequest = Request, TMethods = Record<string, never>> {
 	}
 
 	private createVersionRoutes(): void {
-		this.router.get(
-			'/api/v1/projects/:project/versions',
-			withParams,
-			async ({ project }: { project: string }) => {
-				if (!(project in projects)) {
-					return missing('project not found');
-				}
-				const p = projects[project];
-				const provider = p.provider;
-				if (provider === undefined) {
-					throw new Error();
-				}
-				const res = await provider.getProject();
-				if (res === null) {
-					return this.json(null);
-				}
-				return this.json(res.versions);
-			},
-		);
+		this.router.get('/api/v1/projects/:project/versions', withParams, async ({ project }: { project: string }) => {
+			if (!(project in editions)) return missing('project not found');
 
-		this.router.get(
-			'/api/v1/projects/:project/versions/:version',
-			withParams,
-			async ({ project, version }: { project: string; version: string }) => {
-				if (!(project in projects)) {
-					return missing('project not found');
-				}
-				const p = projects[project];
-				const provider = p.provider;
-				if (provider === undefined) {
-					throw new Error();
-				}
-				return this.json(await provider.getVersion(version));
-			},
-		);
+			const p = editions[project];
+			const provider = p.provider;
+			if (provider === undefined) throw new Error();
 
-		this.router.get(
-			'/api/v1/projects/:project/versions/:version/builds',
-			withParams,
-			async ({ project, version }: { project: string; version: string }) => {
-				if (!(project in projects)) {
-					return missing('project not found');
-				}
-				const p = projects[project];
-				const provider = p.provider;
-				if (provider === undefined) {
-					throw new Error();
-				}
-				const res = await provider.getVersion(version);
-				if (res === null) {
-					return this.json(null);
-				}
-				return this.json(res.builds);
-			},
-		);
+			const res = await provider.getProject();
+			if (res === null || res.type !== ProviderType.EDITION) return this.json(null);
 
-		this.router.get(
-			'/api/v1/projects/:project/versions/:version/builds/:build',
-			withParams,
+			return this.json((res as EditionProvider).versions);
+		});
+
+		this.router.get('/api/v1/projects/:project/versions/:version', withParams, async ({ project, version }: {
+			project: string;
+			version: string
+		}) => {
+			if (!(project in editions)) return missing('project not found');
+
+			const p = editions[project];
+			const provider = p.provider;
+			if (provider === undefined) throw new Error();
+
+			return this.json(await provider.getVersion(version));
+		});
+
+		this.router.get('/api/v1/projects/:project/versions/:version/builds', withParams, async ({ project, version }: {
+			project: string;
+			version: string
+		}) => {
+			if (!(project in editions)) return missing('project not found');
+
+			const p = editions[project];
+			const provider = p.provider;
+			if (provider === undefined) throw new Error();
+
+			const res = await provider.getVersion(version);
+			if (res === null) return this.json(null);
+
+			return this.json(res.builds);
+		});
+
+		interface BuildBody {
+			url: string;
+			params: {
+				project: string;
+				version: string;
+				build: string;
+			};
+		}
+
+		this.router.get('/api/v1/projects/:project/versions/:version/builds/:build', withParams,
 			async ({
-					   params: { project, version, build },
-					   url,
-				   }: {
-				params: { project: string; version: string; build: string };
-				url: string;
-			}) => {
-				if (!(project in projects)) {
-					return missing('project not found');
-				}
-				const p = projects[project];
+					   params: {
+						   project,
+						   version,
+						   build,
+					   }, url,
+				   }: BuildBody) => {
+				if (!(project in editions)) return missing('project not found');
+
+				const p = editions[project];
 				const provider = p.provider;
-				if (provider === undefined) {
-					throw new Error();
-				}
+				if (provider === undefined) throw new Error();
+
 				const res = await provider.getBuild(version, build);
-				if (res === null) {
-					return this.json(null);
-				}
+				if (res === null) return this.json(null);
+
 				res.download.url = this.getURL(url) + res.download.url;
 				return this.json(res);
-			},
-		);
+			});
 
-		this.router.get(
-			'/api/v1/projects/:project/versions/:version/builds/:build/download',
-			withParams,
-			async ({ project, version, build }: { project: string; version: string; build: string }) => {
-				if (!(project in projects)) {
-					return missing('project not found');
-				}
-				const p = projects[project];
+		this.router.get('/api/v1/projects/:project/versions/:version/builds/:build/download', withParams,
+			async ({
+					   project,
+					   version,
+					   build,
+				   }: {
+				project: string;
+				version: string;
+				build: string
+			}) => {
+				if (!(project in editions)) return missing('project not found');
+
+				const p = editions[project];
 				const provider = p.provider;
-				if (provider === undefined) {
-					throw new Error();
-				}
+				if (provider === undefined) throw new Error();
+
 				const res = await provider.getDownload(version, build);
-				if (res === null) {
-					return this.json(null);
-				}
+				if (res === null) return this.json(null);
+
 				return res;
-			},
-		);
+			});
 	}
 
 	private createModpackRoutes(): void {
+		this.router.get('/api/v1/projects/:project/mods', async ({ params, query: queryParams }: {params: { project: string}, query: { query?: string}, url: string}) => {
+			const { project } = params;
+			const { query } = queryParams;
 
+			if (!(project in mods)) return missing('project not found');
+
+			const p = mods[project];
+			const provider = p.provider;
+			if (provider === undefined) throw new Error();
+
+			const res = await provider.searchMods(query);
+			if (res === null) return this.json(null);
+
+			return this.json(res);
+		});
+
+		this.router.get('/api/v1/projects/:project/mods/:mod', async ({ params }: {params: { project: string, mod: string }, url: string}) => {
+			const { project, mod } = params;
+
+			if (!(project in mods)) return missing('project not found');
+
+			const p = mods[project];
+			const provider = p.provider;
+			if (provider === undefined) throw new Error();
+
+			const res = await provider.getMod(mod);
+			if (res === null) return this.json(null);
+
+			return this.json(res);
+		});
+
+		// Passing ?serverOnly=true will drastically increase the response time as it has to perform a lot of extra http requests.
+		this.router.get('/api/v1/projects/:project/mods/:mod/files', async ({ params, query, url }: {params: { project: string, mod: string, serverOnly?: boolean}, query: {serverOnly?: boolean}, url: string}) => {
+			const { project, mod } = params;
+			const { serverOnly } = query;
+
+			if (!(project in mods)) return missing('project not found');
+
+			const p = mods[project];
+			const provider = p.provider;
+			if (provider === undefined) throw new Error();
+
+			const res = await provider.getFiles(mod, serverOnly ?? false);
+			if (res === null) return this.json(null);
+
+			for (const file of res) file.download.url = this.getURL(url) + file.download.url;
+			return this.json(res);
+		});
+
+		this.router.get('/api/v1/projects/:project/mods/:mod/files/:file', async ({ params, query, url }: {params: { project: string, mod: string, file: string }, query: {serverOnly?: boolean}, url: string}) => {
+			const { project, mod, file } = params;
+			const { serverOnly } = query;
+
+			if (!(project in mods)) return missing('project not found');
+
+			const p = mods[project];
+			const provider = p.provider;
+			if (provider === undefined) throw new Error();
+
+			const res = await provider.getFile(mod, file, serverOnly ?? false);
+			if (res === null) return this.json(null);
+
+			res.download.url = this.getURL(url) + res.download.url;
+			return this.json(res);
+		});
+
+		this.router.get('/api/v1/projects/:project/mods/:mod/files/:file/download', async ({ params }: {params: { project: string, mod: string, file: string }}) => {
+			const { project, mod, file } = params;
+
+			if (!(project in mods)) return missing('project not found');
+
+			const p = mods[project];
+			const provider = p.provider;
+			if (provider === undefined) throw new Error();
+
+			const res = await provider.getDownload(mod, file);
+			if (res === null) return this.json(null);
+
+			return res;
+		});
 	}
 
 	public handleRequest(request: TRequest): Promise<Response> {

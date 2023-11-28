@@ -34,10 +34,10 @@ rules:
   simple-import-sort/imports:
     - warn
     - groups:
-      - ["^@?\\w"]
-      - ["^"]
-      - ["^\\."]
-      - ["^\\u0000"]
+        - [ "^@?\\w" ]
+        - [ "^" ]
+        - [ "^\\." ]
+        - [ "^\\u0000" ]
   simple-import-sort/exports:
     - warn
   "@typescript-eslint/ban-ts-comment": 0

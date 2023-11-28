@@ -273,36 +273,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@matthewpi/claws@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "@matthewpi/claws@workspace:."
-  dependencies:
-    "@cloudflare/workers-types": 3.10.0
-    "@types/itty-router-extras": 0.4.0
-    "@typescript-eslint/eslint-plugin": 5.25.0
-    "@typescript-eslint/parser": 5.25.0
-    "@yarnpkg/esbuild-plugin-pnp": 2.0.2
-    cross-env: 7.0.3
-    esbuild: 0.14.39
-    eslint: 8.15.0
-    eslint-config-prettier: 8.5.0
-    eslint-config-standard: 17.0.0
-    eslint-plugin-import: 2.26.0
-    eslint-plugin-n: 15.1.0
-    eslint-plugin-node: 11.1.0
-    eslint-plugin-promise: 6.0.0
-    eslint-plugin-simple-import-sort: 7.0.0
-    husky: 8.0.1
-    itty-router: 2.6.1
-    itty-router-extras: 0.4.2
-    lint-staged: 12.4.1
-    prettier: 2.6.2
-    typescript: 4.6.4
-    wrangler: 3.1.1
-    ~: "link:./src"
-  languageName: unknown
-  linkType: soft
-
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -350,6 +320,38 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rocketnodeinc/claws@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@rocketnodeinc/claws@workspace:."
+  dependencies:
+    "@cloudflare/workers-types": 3.10.0
+    "@types/itty-router-extras": 0.4.0
+    "@types/semver": 7.5.0
+    "@typescript-eslint/eslint-plugin": 5.25.0
+    "@typescript-eslint/parser": 5.25.0
+    "@yarnpkg/esbuild-plugin-pnp": 2.0.2
+    cross-env: 7.0.3
+    esbuild: 0.14.39
+    eslint: 8.15.0
+    eslint-config-prettier: 8.5.0
+    eslint-config-standard: 17.0.0
+    eslint-plugin-import: 2.26.0
+    eslint-plugin-n: 15.1.0
+    eslint-plugin-node: 11.1.0
+    eslint-plugin-promise: 6.0.0
+    eslint-plugin-simple-import-sort: 7.0.0
+    husky: 8.0.1
+    itty-router: 2.6.1
+    itty-router-extras: 0.4.2
+    lint-staged: 12.4.1
+    prettier: 2.6.2
+    semver: 7.5.4
+    typescript: 4.6.4
+    wrangler: 3.1.1
+    ~: "link:./src"
+  languageName: unknown
+  linkType: soft
+
 "@tootallnate/once@npm:2":
   version: 2.0.0
   resolution: "@tootallnate/once@npm:2.0.0"
@@ -377,6 +379,13 @@ __metadata:
   version: 0.0.29
   resolution: "@types/json5@npm:0.0.29"
   checksum: e60b153664572116dfea673c5bda7778dbff150498f44f998e34b5886d8afc47f16799280e4b6e241c0472aef1bc36add771c569c68fc5125fc2ae519a3eb9ac
+  languageName: node
+  linkType: hard
+
+"@types/semver@npm:7.5.0":
+  version: 7.5.0
+  resolution: "@types/semver@npm:7.5.0"
+  checksum: 0a64b9b9c7424d9a467658b18dd70d1d781c2d6f033096a6e05762d20ebbad23c1b69b0083b0484722aabf35640b78ccc3de26368bcae1129c87e9df028a22e2
   languageName: node
   linkType: hard
 
@@ -3690,6 +3699,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"semver@npm:7.5.4":
+  version: 7.5.4
+  resolution: "semver@npm:7.5.4"
+  dependencies:
+    lru-cache: ^6.0.0
+  bin:
+    semver: bin/semver.js
+  checksum: 12d8ad952fa353b0995bf180cdac205a4068b759a140e5d3c608317098b3575ac2f1e09182206bf2eb26120e1c0ed8fb92c48c592f6099680de56bb071423ca3
+  languageName: node
+  linkType: hard
+
 "semver@npm:^6.1.0, semver@npm:^6.3.0":
   version: 6.3.0
   resolution: "semver@npm:6.3.0"
@@ -4456,8 +4476,8 @@ __metadata:
   languageName: node
   linkType: hard
 
-"~@link:./src::locator=%40matthewpi%2Fclaws%40workspace%3A.":
+"~@link:./src::locator=%40rocketnodeinc%2Fclaws%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "~@link:./src::locator=%40matthewpi%2Fclaws%40workspace%3A."
+  resolution: "~@link:./src::locator=%40rocketnodeinc%2Fclaws%40workspace%3A."
   languageName: node
   linkType: soft

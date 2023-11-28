@@ -1,16 +1,16 @@
 import { Purpur } from '~/api/minecraft/purpur/index';
-import { Build, ProjectProvider, ProviderHandler, Version } from '~/schema';
+import { Build, EditionProvider, EditionProviderHandler, ProviderHandler, ProviderType, Version } from '~/schema';
 
-export class Provider implements ProviderHandler {
+export class Provider implements EditionProviderHandler {
 	private readonly purpur: Purpur;
-	private readonly project: ProjectProvider;
+	private readonly project: EditionProvider;
 
-	public constructor(purpur: Purpur, project: ProjectProvider) {
+	public constructor(purpur: Purpur, project: EditionProvider) {
 		this.purpur = purpur;
 		this.project = project;
 	}
 
-	async getProject(): Promise<ProjectProvider | null> {
+	async getProject(): Promise<EditionProvider | null> {
 		const p = await this.purpur.getProject(this.project.slug);
 		if (p === null) {
 			return null;
@@ -19,6 +19,7 @@ export class Provider implements ProviderHandler {
 			slug: this.project.slug,
 			name: this.project.name,
 			versions: p.versions,
+			type: ProviderType.EDITION,
 		};
 	}
 

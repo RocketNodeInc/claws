@@ -1,17 +1,17 @@
-import { PaperMC } from '~/api/minecraft/papermc/index';
+import { Forge } from '~/api/minecraft/forge/index';
 import { Build, EditionProvider, EditionProviderHandler, ProviderHandler, ProviderType, Version } from '~/schema';
 
 export class Provider implements EditionProviderHandler {
-	private readonly paperMC: PaperMC;
+	private readonly forge: Forge;
 	private readonly project: EditionProvider;
 
-	public constructor(paperMC: PaperMC, project: EditionProvider) {
-		this.paperMC = paperMC;
+	public constructor(forge: Forge, project: EditionProvider) {
+		this.forge = forge;
 		this.project = project;
 	}
 
 	async getProject(): Promise<EditionProvider | null> {
-		const p = await this.paperMC.getProject(this.project.slug);
+		const p = await this.forge.getProject();
 		if (p === null) {
 			return null;
 		}
@@ -24,10 +24,9 @@ export class Provider implements EditionProviderHandler {
 	}
 
 	async getVersion(version: string): Promise<Version | null> {
-		const v = await this.paperMC.getVersion(this.project.slug, version);
-		if (v === null) {
-			return v;
-		}
+		const v = await this.forge.getVersion(version);
+		if (v === null) return v;
+
 		return {
 			name: v.version,
 			builds: v.builds.map((v) => v.toString()),
@@ -37,35 +36,46 @@ export class Provider implements EditionProviderHandler {
 	async getBuild(version: string, build: string): Promise<Build | null> {
 		if (build === 'latest') {
 			const latestBuild = await this.getVersion(version);
-			if (latestBuild === null) {
-				return null;
-			}
+			if (latestBuild === null) return null;
+
 			build = latestBuild.builds[0] || '';
-			if (build === '') {
-				return null;
-			}
+			if (build === '') return null;
 		}
 
-		const b = await this.paperMC.getBuild(this.project.slug, version, build);
-		if (b === null) {
-			return null;
-		}
-		const d = b.downloads.application;
+		const b = await this.forge.getBuild(version, build);
+		if (b === null) return null;
+
+		const file = b.installerFile || b.universalFile;
+
 		return {
 			id: build,
 			download: {
-				name: d.name,
+				name: b.version,
 				url: `/api/v1/projects/${this.project.slug}/versions/${version}/builds/${build}/download`,
-				builtAt: b.time,
+				builtAt: new Date(b.releaseTime),
 				checksums: {
-					sha256: d.sha256,
+					sha1: file?.downloads?.artifact.sha1,
 				},
-				metadata: {},
+				metadata: {
+					installer: b.installerFile,
+					universal: b.universalFile,
+				},
 			},
 		};
 	}
 
 	async getDownload(version: string, build: string): Promise<Response | null> {
-		return this.paperMC.getDownload(this.project.slug, version, build);
+		if (build === 'latest') {
+			const latestBuild = await this.getVersion(version);
+			if (latestBuild === null) return null;
+
+			build = latestBuild.builds[0] || '';
+			if (build === '') return null;
+		}
+
+		const b = await this.forge.getBuild(version, build);
+		if (b === null) return null;
+
+		return this.forge.getDownload(version, b);
 	}
 }

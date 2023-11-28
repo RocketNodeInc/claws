@@ -1,4 +1,4 @@
-import {rawDataToVersion, Version} from "~/api/minecraft/vanilla/version";
+import { rawDataToVersion, Version } from '~/api/minecraft/vanilla/version';
 
 export interface Manifest {
 	projectId: string;
@@ -9,8 +9,8 @@ export interface Manifest {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function rawDataToManifest(data: any): Manifest {
 	return {
-		projectId: "vanilla",
-		projectName: "Vanilla",
+		projectId: 'vanilla',
+		projectName: 'Vanilla',
 		versions: data.versions.map(rawDataToVersion),
 	};
 }

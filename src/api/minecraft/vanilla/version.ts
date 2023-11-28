@@ -13,6 +13,6 @@ export function rawDataToVersion(data: any): Version {
 		type: data.type,
 		metadataURL: data.url,
 		time: data.time,
-		releaseTime: data.releaseTime
+		releaseTime: data.releaseTime,
 	};
 }

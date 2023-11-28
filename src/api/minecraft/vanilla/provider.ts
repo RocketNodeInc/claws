@@ -1,24 +1,24 @@
 import { Vanilla } from '~/api/minecraft/vanilla/index';
-import { Build, ProjectProvider, ProviderHandler, Version } from '~/schema';
+import { Build, EditionProvider, EditionProviderHandler, ProviderType, Version } from '~/schema';
 
-export class Provider implements ProviderHandler {
+export class Provider implements EditionProviderHandler {
 	private readonly vanilla: Vanilla;
-	private readonly project: ProjectProvider;
+	private readonly project: EditionProvider;
 
-	public constructor(vanilla: Vanilla, project: ProjectProvider) {
+	public constructor(vanilla: Vanilla, project: EditionProvider) {
 		this.vanilla = vanilla;
 		this.project = project;
 	}
 
-	async getProject(): Promise<ProjectProvider | null> {
+	async getProject(): Promise<EditionProvider | null> {
 		const p = await this.vanilla.getManifest();
-		if (p === null) {
-			return null;
-		}
+		if (p === null) return null;
+
 		return {
 			slug: this.project.slug,
 			name: this.project.name,
 			versions: p.versions.map(version => version.version),
+			type: ProviderType.EDITION,
 		};
 	}
 
@@ -29,13 +29,13 @@ export class Provider implements ProviderHandler {
 		}
 		return {
 			name: v.version,
-			builds: ["latest"],
+			builds: ['latest'],
 		};
 	}
 
 	async getBuild(version: string, build: string): Promise<Build | null> {
 		if (build !== 'latest') {
-			return null
+			return null;
 		}
 
 		const b = await this.vanilla.getBuild(version);
@@ -59,7 +59,7 @@ export class Provider implements ProviderHandler {
 
 	async getDownload(version: string, build: string): Promise<Response | null> {
 		if (build !== 'latest') {
-			return null
+			return null;
 		}
 		return this.vanilla.getDownload(version);
 	}

@@ -68,7 +68,7 @@ class Purpur {
 		const b = rawDataToBuild(await res.json());
 
 		if (b.result !== 'SUCCESS') {
-			throw new StatusError(400, "build is bad, m'kay");
+			throw new StatusError(400, 'build is bad, m\'kay');
 		}
 
 		return b;

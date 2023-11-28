@@ -1,18 +1,10 @@
-import paper from '~/projects/paper';
-import purpur from '~/projects/purpur';
-import travertine from '~/projects/travertine';
-import waterfall from '~/projects/waterfall';
-import vanilla from "~/projects/vanilla";
-import { ProjectProvider } from '~/schema';
+import editions from '~/editions';
+import mods from '~/mods';
+import { Provider } from '~/schema';
 
-const projects: Record<string, ProjectProvider> = {
-	paper,
-	purpur,
-	travertine,
-	waterfall,
-	vanilla,
+const projects: Record<string, Provider> = {
+	...mods,
+	...editions,
 };
 
 export default projects;
-
-export { paper, purpur, travertine, waterfall, vanilla };
