@@ -49,8 +49,6 @@ class Curseforge {
 		const json: any = await res.json();
 		if (json === null) return [];
 
-		console.log(json);
-
 		const mods = [];
 		for(const file of json.data) {
 			mods.push(new Mod(this, file));
@@ -141,8 +139,10 @@ class Curseforge {
 	}
 
 	async getDownload(modfile: ModFile): Promise<Response | null> {
+		const url = modfile.downloadUrl ?? `https://www.curseforge.com/api/v1/mods/${modfile.modId}/files/${modfile.id}/download`;
+
 		const res = await this.fetch(
-			modfile.downloadUrl,
+			url,
 			{
 				cf: {
 					cacheEverything: true,

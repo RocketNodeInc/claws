@@ -19,7 +19,7 @@ export class ModFile extends CurseObject {
 	public readonly fileDate: Date;
 	public readonly fileLength: bigint;
 	public readonly downloadCount: bigint;
-	public readonly downloadUrl: string;
+	public readonly downloadUrl?: string;
 	public readonly gameVersions: string[];
 	public readonly sortableGameVersions: SortableGameVersion[];
 	public readonly dependencies: FileDependency[];
