@@ -4,6 +4,7 @@ import { EditionProvider, ProviderType } from '~/schema';
 const vanilla: EditionProvider = {
 	slug: 'vanilla',
 	name: 'Vanilla',
+	icon: 'https://imagedelivery.net/fcS-Eb3CuvKDsSNDBD51Fg/3000e55a-bbd9-45ff-ed57-eceb2e0c6400/public',
 	type: ProviderType.EDITION,
 };
 

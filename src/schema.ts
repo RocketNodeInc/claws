@@ -44,6 +44,7 @@ export enum ProviderType {
 export interface Provider {
 	slug: string;
 	name: string;
+	icon?: string;
 	provider?: ProviderHandler;
 	type: ProviderType;
 }
