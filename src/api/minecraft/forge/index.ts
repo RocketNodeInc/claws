@@ -39,8 +39,6 @@ class Forge {
 
 		const json: Record<string, any> = await res.json();
 		const ver = json.versions.find((v: any) => v.requires.find((r: any) => r.equals === version));
-		console.log('hello');
-		console.log(ver);
 		if (!ver) return null;
 
 		return rawDataToVersion(ver, json.versions);

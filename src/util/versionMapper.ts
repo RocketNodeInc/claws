@@ -20,8 +20,6 @@ export async function versionMapper(versions: string[] = []): Promise<{ [key: st
 
 	versions = versions.reverse();
 
-	console.log(versions);
-
 	let temp = 0;
 	const m: { [key: string]: string } = {};
 	for (let i = 0; i < versions.length; i++) {

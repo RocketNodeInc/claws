@@ -8,7 +8,6 @@ export interface Project {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function rawDataToProject(data: any): Project {
-	console.log(data);
 	return {
 		name: data.name,
 		uid: data.uid,
