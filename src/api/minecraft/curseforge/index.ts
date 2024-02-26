@@ -5,7 +5,6 @@ import { Mod } from '~/api/minecraft/curseforge/types/Mod';
 import { ModFile } from '~/api/minecraft/curseforge/types/ModFile';
 import { PagingOptions, SearchOptions } from '~/api/minecraft/curseforge/types/types';
 import cachedFetch from '~/cachedFetch';
-import { Env } from '~/index';
 
 import { Provider } from './provider';
 
@@ -72,21 +71,24 @@ class Curseforge {
 	// This uses the getFiles function.
 	// getFiles will return the latest files and it tells us if there are server packs available.
 	// If there are server packs available, this creates a list and fetches them from the API.
+	// This function does a lot of API requests and is not very efficient, so we run it in parallel.
 	async getServerFiles(modId: number, searchOptions: {gameVersion?: string, modLoaderType?: ModLoaderType | number, gameVersionTypeId?: number} & PagingOptions): Promise<ModFile[]> {
 		const files = await this.getFiles(modId, searchOptions);
-		const serverFiles: ModFile[] = [];
+		const getFilePromises: Promise<ModFile | undefined>[] = [];
 
-		for(const file of files){
-			if(file.serverPackFileId) {
-				const serverFile = await this.getFile(file.modId, file.serverPackFileId);
-				if(serverFile) serverFiles.push(serverFile);
+		for (const file of files) {
+			if (file.serverPackFileId) {
+				// Instead of waiting here, push the promise to the array to run later in parallel
+				getFilePromises.push(this.getFile(file.modId, file.serverPackFileId));
 			} else if (file.isServerPack) {
-				serverFiles.push(file);
+				// Immediately resolved promise for server packs
+				getFilePromises.push(Promise.resolve(file));
 			}
 		}
 
-		return serverFiles;
+		return (await Promise.all(getFilePromises)).filter((file): file is ModFile => file !== undefined);
 	}
+
 
 	// If the given id is a server pack, return that.
 	// If the given id is a mod, with a server pack, fetch and return that.
