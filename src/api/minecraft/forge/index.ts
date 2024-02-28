@@ -85,7 +85,7 @@ class Forge {
 		r.headers.set(
 			'Content-Disposition',
 			`attachment; filename=${JSON.stringify(
-				'forge' + '-' + version + '-' + build + '.jar',
+				'forge' + '-' + version + '-' + build.version + '.jar',
 			)}`,
 		);
 		r.headers.set('Content-Type', 'application/java-archive');
