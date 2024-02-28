@@ -66,7 +66,7 @@ class Forge {
 	async getDownload(version: string, build: Build): Promise<Response | null> {
 		if (!build.universalFile && !build.installerFile) return null;
 
-		const res = await this.fetchNoBase(build.universalFile?.downloads.artifact.url || build.installerFile!.downloads.artifact.url,
+		const res = await this.fetchNoBase(build.installerFile?.downloads.artifact.url || build.universalFile!.downloads.artifact.url,
 			{
 				cf: {
 					cacheEverything: true,
