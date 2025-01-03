@@ -8,6 +8,6 @@ const travertine: EditionProvider = {
 	type: ProviderType.EDITION,
 };
 
-travertine.provider = new Provider(new PaperMC('https://papermc.io/api/v2'), travertine);
+travertine.provider = new Provider(new PaperMC('https://api.papermc.io/v2'), travertine);
 
 export default travertine;

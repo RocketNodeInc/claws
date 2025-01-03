@@ -8,6 +8,6 @@ const waterfall: EditionProvider = {
 	type: ProviderType.EDITION,
 };
 
-waterfall.provider = new Provider(new PaperMC('https://papermc.io/api/v2'), waterfall);
+waterfall.provider = new Provider(new PaperMC('https://api.papermc.io/v2'), waterfall);
 
 export default waterfall;
